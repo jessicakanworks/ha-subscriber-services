@@ -1,0 +1,7 @@
+---
+- name: Install Kea DHCP4
+  ansible.builtin.package: {name: kea-dhcp4-server, state: present}
+- name: Kea config with hot-standby HA
+  ansible.builtin.template: {src: kea-dhcp4.conf.j2, dest: /etc/kea/kea-dhcp4.conf}
+  notify: restart kea
+- ansible.builtin.service: {name: kea-dhcp4-server, state: started, enabled: true}

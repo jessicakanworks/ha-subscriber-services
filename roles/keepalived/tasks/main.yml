@@ -1,0 +1,5 @@
+---
+- ansible.builtin.package: {name: keepalived, state: present}
+- ansible.builtin.template: {src: keepalived.conf.j2, dest: /etc/keepalived/keepalived.conf, mode: "0600"}
+  notify: restart keepalived
+- ansible.builtin.service: {name: keepalived, state: started, enabled: true}

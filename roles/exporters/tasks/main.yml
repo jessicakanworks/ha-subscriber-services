@@ -1,0 +1,9 @@
+---
+- name: node_exporter and bind_exporter via package where available
+  ansible.builtin.package: {name: prometheus-node-exporter, state: present}
+- ansible.builtin.service: {name: prometheus-node-exporter, state: started, enabled: true}
+- name: Expose keepalived state as a textfile metric
+  ansible.builtin.copy:
+    dest: /etc/cron.d/keepalived_metric
+    content: |
+      * * * * * root ip addr show {{ vrrp_interface }} | grep -q {{ service_vip }} && echo 'aaa_vip_owner 1' > /var/lib/prometheus/node-exporter/vip.prom || echo 'aaa_vip_owner 0' > /var/lib/prometheus/node-exporter/vip.prom

@@ -1,0 +1,10 @@
+options {
+    directory "/var/cache/bind";
+    recursion yes;
+    allow-recursion { 100.64.0.0/10; 10.0.0.0/8; };
+    forwarders { {% for f in dns_forwarders %}{{ f }}; {% endfor %} };
+    dnssec-validation auto;
+    listen-on { {{ ansible_host }}; {{ service_vip }}; };
+    rate-limit { responses-per-second 20; };
+    version "not disclosed";
+};

@@ -1,0 +1,4 @@
+client haproxy_local { ipaddr = 127.0.0.1  secret = {{ radius_secret | default('changeme') }} }
+{% for nas in radius_clients | default([{'name':'bng-01','ip':'10.0.0.5'},{'name':'vpn-01','ip':'10.0.0.6'}]) %}
+client {{ nas.name }} { ipaddr = {{ nas.ip }}  secret = {{ radius_secret | default('changeme') }}  nas_type = other }
+{% endfor %}

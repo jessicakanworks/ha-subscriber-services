@@ -1,0 +1,21 @@
+global
+    log /dev/log local0
+    maxconn 20000
+defaults
+    log global
+    timeout connect 5s
+    timeout client 30s
+    timeout server 30s
+listen stats
+    bind {{ ansible_default_ipv4.address }}:8404
+    mode http
+    stats enable
+    stats uri /
+    stats auth {{ haproxy_stats_user | default('ops') }}:{{ haproxy_stats_pass | default('changeme') }}
+# RadSec / RADIUS over TCP from NAS that support it; UDP RADIUS reaches the VIP directly
+listen radius_tcp
+    bind {{ service_vip }}:2083
+    mode tcp
+    balance first
+    server svc-01 10.20.0.11:2083 check
+    server svc-02 10.20.0.12:2083 check backup

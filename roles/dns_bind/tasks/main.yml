@@ -1,0 +1,8 @@
+---
+- name: Install BIND
+  ansible.builtin.package: {name: "{{ 'bind9' if ansible_os_family=='Debian' else 'bind' }}", state: present}
+- name: named options (recursion for subscribers, RRL, DNSSEC validation)
+  ansible.builtin.template: {src: named.conf.options.j2, dest: "{{ '/etc/bind/named.conf.options' if ansible_os_family=='Debian' else '/etc/named.conf' }}"}
+  notify: reload bind
+- name: Enable BIND
+  ansible.builtin.service: {name: "{{ 'named' if ansible_os_family=='Debian' else 'named' }}", state: started, enabled: true}

@@ -1,0 +1,14 @@
+service_vip: 10.20.0.10
+vrrp_interface: eth0
+vrrp_router_id: 51
+dns_forwarders: [1.1.1.1, 9.9.9.9]
+dns_zones:
+  - name: subscribers.example.net
+    file: db.subscribers.example.net
+dhcp_subnet: 100.64.0.0/22
+dhcp_pool: 100.64.0.10 - 100.64.3.250
+dhcp_lease_seconds: 3600
+radius_clients:
+  - {name: bng-01, ip: 10.20.1.1, secret: "{{ vault_radius_secret_bng01 }}"}
+  - {name: vpn-gw-01, ip: 10.20.1.5, secret: "{{ vault_radius_secret_vpn01 }}"}
+radius_db_host: 10.20.0.20

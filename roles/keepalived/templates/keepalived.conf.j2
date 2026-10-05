@@ -1,0 +1,15 @@
+vrrp_script chk_services {
+    script "/usr/local/bin/check_aaa_services.sh"
+    interval 5
+    weight -30
+}
+vrrp_instance AAA {
+    state {{ keepalived_state }}
+    interface {{ vrrp_interface }}
+    virtual_router_id {{ vrrp_router_id }}
+    priority {{ keepalived_priority }}
+    advert_int 1
+    authentication { auth_type PASS  auth_pass {{ vault_vrrp_pass }} }
+    virtual_ipaddress { {{ service_vip }}/24 }
+    track_script { chk_services }
+}

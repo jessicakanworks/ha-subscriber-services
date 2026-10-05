@@ -1,0 +1,5 @@
+---
+- name: HA subscriber services (DNS / DHCP / RADIUS)
+  hosts: aaa
+  become: true
+  roles: [keepalived, bind9, kea_dhcp, freeradius, haproxy, exporters]

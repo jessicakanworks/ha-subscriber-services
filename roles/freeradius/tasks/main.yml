@@ -1,0 +1,9 @@
+---
+- ansible.builtin.package: {name: [freeradius, freeradius-postgresql, freeradius-utils], state: present}
+- ansible.builtin.template: {src: clients.conf.j2, dest: /etc/freeradius/3.0/clients.conf, mode: "0640", group: freerad}
+  notify: restart freeradius
+- ansible.builtin.template: {src: sql.j2, dest: /etc/freeradius/3.0/mods-available/sql, mode: "0640", group: freerad}
+  notify: restart freeradius
+- ansible.builtin.file: {src: /etc/freeradius/3.0/mods-available/sql, dest: /etc/freeradius/3.0/mods-enabled/sql, state: link}
+  notify: restart freeradius
+- ansible.builtin.service: {name: freeradius, state: started, enabled: true}

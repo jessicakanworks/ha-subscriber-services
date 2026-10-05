@@ -1,0 +1,29 @@
+---
+- ansible.builtin.package: {name: haproxy, state: present}
+- ansible.builtin.copy:
+    dest: /etc/haproxy/haproxy.cfg
+    validate: "haproxy -c -f %s"
+    content: |
+      global
+          log /dev/log local0
+          stats socket /run/haproxy/admin.sock mode 660 level admin
+      defaults
+          log global
+          timeout connect 5s
+          timeout client 30s
+          timeout server 30s
+      frontend stats
+          bind *:8404
+          mode http
+          stats enable
+          stats uri /stats
+      # DNS over TCP (UDP handled by keepalived VIP directly)
+      listen dns_tcp
+          bind {{ service_vip }}:53
+          mode tcp
+          balance roundrobin
+          option tcp-check
+          server aaa-01 10.20.0.11:53 check
+          server aaa-02 10.20.0.12:53 check backup
+  notify: reload haproxy
+- ansible.builtin.service: {name: haproxy, state: started, enabled: true}

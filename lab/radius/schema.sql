@@ -1,0 +1,1 @@
+-- Load the FreeRADIUS PostgreSQL schema here (raddb/mods-config/sql/main/postgresql/schema.sql).

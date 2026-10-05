@@ -1,0 +1,5 @@
+---
+- ansible.builtin.package: {name: [kea-dhcp4-server, kea-ctrl-agent], state: present}
+- ansible.builtin.template: {src: kea-dhcp4.conf.j2, dest: /etc/kea/kea-dhcp4.conf, validate: "kea-dhcp4 -t %s"}
+  notify: restart kea
+- ansible.builtin.service: {name: kea-dhcp4-server, state: started, enabled: true}

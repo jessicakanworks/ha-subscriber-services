@@ -1,0 +1,19 @@
+# Single-node lab of the same services, for testing configuration changes.
+services:
+  bind:
+    image: internetsystemsconsortium/bind9:9.18
+    volumes: ["./lab/bind:/etc/bind:ro"]
+    ports: ["5353:53/udp", "5353:53/tcp"]
+  kea:
+    image: jonasal/kea-dhcp4:2.6
+    network_mode: host
+    volumes: ["./lab/kea:/etc/kea:ro"]
+  postgres:
+    image: postgres:16
+    environment: {POSTGRES_USER: radius, POSTGRES_PASSWORD: radius, POSTGRES_DB: radius}
+    volumes: ["./lab/radius/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro"]
+  freeradius:
+    image: freeradius/freeradius-server:3.2
+    depends_on: [postgres]
+    volumes: ["./lab/radius/clients.conf:/etc/raddb/clients.conf:ro"]
+    ports: ["1812:1812/udp", "1813:1813/udp"]

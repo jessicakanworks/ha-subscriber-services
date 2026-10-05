@@ -1,0 +1,12 @@
+acl subscribers { 100.64.0.0/10; 10.0.0.0/8; };
+options {
+    directory "/var/cache/bind";
+    listen-on { 127.0.0.1; {{ ansible_default_ipv4.address }}; {{ service_vip }}; };
+    allow-query { subscribers; localhost; };
+    allow-recursion { subscribers; localhost; };
+    recursion yes;
+    dnssec-validation auto;
+    rate-limit { responses-per-second 20; window 5; };
+    minimal-responses yes;
+    version "not disclosed";
+};

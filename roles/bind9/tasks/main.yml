@@ -1,0 +1,7 @@
+---
+- ansible.builtin.package: {name: "{{ 'bind9' if ansible_os_family=='Debian' else 'bind' }}", state: present}
+- ansible.builtin.template: {src: named.conf.options.j2, dest: /etc/bind/named.conf.options}
+  notify: reload named
+- ansible.builtin.template: {src: named.conf.local.j2, dest: /etc/bind/named.conf.local}
+  notify: reload named
+- ansible.builtin.service: {name: named, state: started, enabled: true}

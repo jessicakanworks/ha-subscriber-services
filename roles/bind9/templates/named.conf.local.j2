@@ -1,0 +1,7 @@
+{% for z in dns_zones %}
+zone "{{ z.name }}" {
+    type {{ 'primary' if keepalived_state == 'MASTER' else 'secondary' }};
+    file "/var/lib/bind/{{ z.file }}";
+{% if keepalived_state == 'MASTER' %}    allow-transfer { 10.20.0.12; };{% else %}    primaries { 10.20.0.11; };{% endif %}
+};
+{% endfor %}
